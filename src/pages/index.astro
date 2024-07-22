@@ -1,0 +1,87 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+---
+
+<style>
+  #title {
+    text-transform: uppercase; 
+    letter-spacing: 1.5rem; 
+    font-size: 6rem;
+  }
+
+  #subtitle {
+    text-transform: uppercase; 
+    font-weight: 400; 
+    letter-spacing: 1.7rem;
+  }
+
+  @media (max-width: 768px) { 
+    #title {
+      text-transform: uppercase; 
+      letter-spacing: initial; 
+      font-size: 3rem;
+    }
+
+    #subtitle {
+      text-transform: uppercase; 
+      font-weight: 400; 
+      font-size: 1.5rem;
+      letter-spacing: initial;
+    }
+  }
+</style>
+
+<AppLayout title="Prasanta Communications" description="We are a technology startup building Internet-powered products.">
+  <div class="text-center">
+    <img src="/prasanta-communications.png" alt="insidert" width="128" height="128">
+    <h1 class="mb-0 mt-0" id="title">Prasanta</h1>
+    <h2 class="mt-0" id="subtitle">Communications</h2>
+
+    <!-- <div>
+      <h3 class="mt-0">Fly High, Fly Beyond.</h3>
+    </div> -->
+  
+    <div>
+      <p class="mb-0">
+        We are a technology startup, building Internet-powered products for businesses and people.
+      </p>
+      <!-- <p class="mt-0">
+        Founded by Ravi Teja & Hemanth.
+      </p> -->
+    </div>
+  </div>
+
+  <div style="margin-top: 7rem;">
+    <h2 class="title-font title-highlight">Products we built</h2>
+
+    <div>
+      <h3 class="section-highlight">MF7</h3>
+      <p class="mt-0 text-justify">Mind and Fitness 7 is an online software as a service designed for Gyms and fitness centres. It helps gym owners manage clients, track subscription dates and payments, track sales, send reminders and many more. It is equipped with all the features needed for a gym owner. It also has mobile application for owners and also for thier clients. This is our first product and running from 7 July, 2017.</p>
+      
+      <a href="https://mf7.in" class="btn btn-dark mb-3" target="_blank">Visit Website</a>
+    </div>
+
+    <div style="margin-top: 6rem;">
+      <h3 class="section-highlight">BOLTY</h3>
+      <p class="mt-0 text-justify">Have you ever struggled taking your car to get its maintenances done? If yes, then here is the solution. Bolty is offering app-based solution to book the service provider of your choice and at your convenient time. Bolty takes care of the rest, from car pickup, get the service done to dropping at your home.</p>
+      
+      <a href="https://bolty.in" class="btn btn-dark mb-3" target="_blank">Visit Website</a>
+    </div>
+  </div>
+
+  <!-- <div style="margin-top: 7rem;">
+    <h2 class="title-font title-highlight">Collaborations</h2>
+    <p class="mt-0 text-justify">We engage in a variety of collaborations with companies and services, including joint product development, co-marketing initiatives, and strategic alliances.</p>
+    <a href="/collaborations">View Collaborations</a>
+  </div> -->
+
+  <!-- <div style="margin-top: 7rem; text-align:center;">
+    <h5 class="mb-0">Say Hi</h5>
+    <p class="mt-0 mb-0">hey@prasanta.business</p>
+    <p class="mt-0">+91 7893933837</p>
+    <a href="https://www.linkedin.com/company/prasanta-communications" target="_blank">
+      <img src="/images/linkedin.png" alt="Prassanta Communications Linkedin" width="32" height="32">
+    </a>
+  </div> -->
+</AppLayout>
