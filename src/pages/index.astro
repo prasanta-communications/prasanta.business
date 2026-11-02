@@ -1,0 +1,143 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostCard from "../components/PostCard.astro";
+import { site } from "../data/site";
+import { products } from "../data/products";
+import { getPublishedPosts, postUrl } from "../lib/posts";
+
+const posts = await getPublishedPosts();
+const latest = posts[0];
+const overviewFor = (slug: string) => posts.find((p) => p.data.product === slug);
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${site.url}/#website`,
+    name: site.name,
+    url: `${site.url}/`,
+    description: site.description,
+    publisher: { "@id": `${site.url}/#organization` },
+    inLanguage: "en",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Products by Prasanta Communications",
+    itemListElement: products.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Product",
+        name: p.name,
+        category: p.category,
+        description: p.summary,
+        url: p.url,
+        brand: { "@id": `${site.url}/#organization` },
+      },
+    })),
+  },
+];
+---
+
+<BaseLayout jsonLd={jsonLd}>
+  <section class="hero">
+    <div class="hero-visual" aria-hidden="true">
+      <span class="hero-glow"></span>
+    </div>
+    <div class="hero-inner wrap">
+      <img class="hero-mark" src={site.logo} alt="" aria-hidden="true" />
+      <h1 class="hero-brand reveal">
+        <span class="hero-brand-line">Prasanta</span>
+        <span class="hero-brand-line accent">Communications</span>
+      </h1>
+      <p class="hero-headline reveal reveal-delay-1">{site.tagline}</p>
+      <div class="hero-ctas reveal reveal-delay-2">
+        <a class="btn btn-primary" href="#products">See what we shaped</a>
+        <a class="btn btn-ghost" href="/contact/">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="products" id="products">
+    <div class="products-intro wrap">
+      <p class="section-label reveal">Index / products</p>
+      <h2 class="section-title reveal">Products we shaped.</h2>
+      <p class="section-lead reveal">
+        From fitness operations to fragrance and business tooling — products we design, build, and
+        run.
+      </p>
+    </div>
+
+    <div class="product-stack">
+      {
+        products.map((product, i) => {
+          const overview = overviewFor(product.slug);
+          return (
+            <article class:list={["product", "reveal", { "product--shift": i % 2 === 1 }]}>
+              <span class="product-index" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div class="product-main">
+                <div class="product-title-row">
+                  <h3 class="product-name">{product.name}</h3>
+                  <p class="product-meta">{product.category}</p>
+                </div>
+                <p class="product-body">{product.summary}</p>
+                <div class="product-links">
+                  <a
+                    class="product-link"
+                    href={product.url}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    Visit {product.domain}
+                  </a>
+                  {overview && (
+                    <a class="product-link product-link--quiet" href={postUrl(overview)}>
+                      Read overview
+                    </a>
+                  )}
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  {
+    latest && (
+      <section class="home-blog" id="blog">
+        <div class="wrap">
+          <p class="section-label reveal">Index / blog</p>
+          <h2 class="section-title reveal">Latest from the Blog</h2>
+          <PostCard post={latest} index={0} variant="feature" />
+          <a class="btn btn-ghost home-blog-cta reveal" href="/blog/">
+            All posts →
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="studio">
+    <div class="studio-slash" aria-hidden="true"></div>
+    <div class="wrap studio-inner">
+      <div class="studio-left reveal">
+        <p class="section-label">The company</p>
+        <h2 class="studio-title">
+          Founded and built by two brothers, completely bootstrapped from day one.
+        </h2>
+      </div>
+      <div class="studio-right reveal reveal-delay-1">
+        <p class="studio-copy">
+          Based in Hyderabad. We keep the team tight, the stack practical, and the focus on products
+          people actually use.
+        </p>
+        <a class="btn btn-ghost" href="/team/">Meet the team →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

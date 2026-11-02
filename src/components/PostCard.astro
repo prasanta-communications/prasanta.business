@@ -1,0 +1,59 @@
+---
+import { formatDate, getAuthor, postUrl, tagUrl, type Post } from "../lib/posts";
+import { getProduct } from "../data/products";
+
+interface Props {
+  post: Post;
+  index: number;
+  headingLevel?: "h2" | "h3";
+  variant?: "row" | "feature";
+}
+
+const { post, index, headingLevel: Heading = "h3", variant = "row" } = Astro.props;
+const product = getProduct(post.data.product);
+const author = await getAuthor(post);
+---
+
+<article
+  class:list={["product", "post-card", "reveal", { "post-card--feature": variant === "feature" }]}
+>
+  {
+    variant === "row" && (
+      <span class="product-index" aria-hidden="true">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+    )
+  }
+  <div class="product-main">
+    <div class="product-title-row">
+      <Heading class="product-name post-card-title">
+        <a href={postUrl(post)}>{post.data.title}</a>
+      </Heading>
+      {post.data.draft && <span class="draft-badge">Draft</span>}
+    </div>
+    <p class="post-meta">
+      <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+      <span aria-hidden="true">/</span>
+      <span>{author.data.name}</span>
+      {product && (
+        <>
+          <span aria-hidden="true">/</span>
+          <span class="post-meta-tag">{product.category}</span>
+        </>
+      )}
+    </p>
+    <p class="product-body">{post.data.description}</p>
+    {
+      post.data.tags.length > 0 && (
+        <ul class="post-tags post-card-tags" aria-label="Tags">
+          {post.data.tags.map((tag) => (
+            <li>
+              <a href={tagUrl(tag)}>{tag}</a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <a class="product-link" href={postUrl(post)}>Read post</a>
+  </div>
+</article>

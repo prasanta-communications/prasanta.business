@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Page not found" description="This page does not exist." noindex>
+  <header class="page-hero wrap">
+    <p class="section-label reveal">Index / 404</p>
+    <h1 class="page-title reveal">
+      <span class="page-title-ghost" aria-hidden="true">404</span>
+      404
+    </h1>
+    <p class="page-lead reveal reveal-delay-1">
+      This page wandered off. The products, team, and posts are still right where we left them.
+    </p>
+  </header>
+
+  <div class="team-cta wrap reveal">
+    <p>Try one of these instead.</p>
+    <div class="hero-ctas not-found-ctas">
+      <a class="btn btn-primary" href="/">Back to home</a>
+      <a class="btn btn-ghost" href="/blog/">Read the blog</a>
+    </div>
+  </div>
+</BaseLayout>

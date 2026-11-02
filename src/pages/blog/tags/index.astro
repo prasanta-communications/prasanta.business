@@ -1,0 +1,67 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { site } from "../../../data/site";
+import { getPublishedPosts, getTags, tagUrl } from "../../../lib/posts";
+
+const tags = getTags(await getPublishedPosts());
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `Tags | ${site.name}`,
+    url: `${site.url}/blog/tags/`,
+    isPartOf: { "@type": "Blog", url: `${site.url}/blog/` },
+    hasPart: tags.map((tag) => ({
+      "@type": "CollectionPage",
+      name: tag.name,
+      url: new URL(tagUrl(tag.name), site.url).href,
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title="Tags"
+  description="Browse Prasanta Communications blog posts by tag."
+  jsonLd={jsonLd}
+>
+  <header class="page-hero wrap">
+    <p class="section-label reveal">Index / blog / tags</p>
+    <h1 class="page-title reveal">
+      <span class="page-title-ghost" aria-hidden="true">Tags</span>
+      Tags
+    </h1>
+    <p class="page-lead reveal reveal-delay-1">
+      Every topic we have written about. <a class="link-underline" href="/blog/">All posts →</a>
+    </p>
+  </header>
+
+  {
+    tags.length > 0 ? (
+      <ul class="tag-list" aria-label="Tags">
+        {tags.map((tag) => (
+          <li class="reveal">
+            <a class="tag-row" href={tagUrl(tag.name)}>
+              <span class="tag-row-name">{tag.name}</span>
+              <span class="tag-row-count">
+                {tag.count} {tag.count === 1 ? "post" : "posts"}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <section class="blog-empty wrap reveal" aria-label="Tags">
+        <p class="blog-empty-title">No tags yet.</p>
+        <p class="blog-empty-copy">
+          Tags appear here once posts are published. Check back soon, or follow along via{" "}
+          <a class="link-underline" href="/rss.xml">
+            RSS
+          </a>
+          .
+        </p>
+      </section>
+    )
+  }
+</BaseLayout>

@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../data/site";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: `Contact | ${site.name}`,
+    url: `${site.url}/contact/`,
+    about: { "@id": `${site.url}/#organization` },
+    mainEntity: {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      email: site.email,
+      telephone: site.phone,
+      areaServed: "IN",
+      availableLanguage: ["English"],
+    },
+  },
+];
+---
+
+<BaseLayout
+  title="Contact"
+  description="Contact Prasanta Communications — email, phone, and LinkedIn."
+  jsonLd={jsonLd}
+>
+  <header class="page-hero wrap">
+    <p class="section-label reveal">Index / contact</p>
+    <h1 class="page-title reveal">
+      <span class="page-title-ghost" aria-hidden="true">Contact</span>
+      Contact
+    </h1>
+    <p class="page-lead reveal reveal-delay-1">
+      Reach us directly. No forms, no wait — just email, phone, or LinkedIn.
+    </p>
+  </header>
+
+  <section class="contact-block" aria-label="Contact details">
+    <a class="contact-mega reveal" href={`mailto:${site.email}`}>
+      <span class="contact-mega-label">Email</span>
+      <span class="contact-mega-value">{site.email}</span>
+    </a>
+
+    <div class="contact-row wrap">
+      <a class="contact-tile reveal" href={`tel:${site.phone}`}>
+        <span class="contact-mega-label">Phone</span>
+        <span class="contact-tile-value">{site.phoneDisplay}</span>
+      </a>
+      <a
+        class="contact-tile reveal reveal-delay-1"
+        href={site.linkedin}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <span class="contact-mega-label">LinkedIn</span>
+        <span class="contact-tile-value">{site.name}</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
