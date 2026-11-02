@@ -1,0 +1,132 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import { site } from "../data/site";
+import { getProduct } from "../data/products";
+import { formatDate, getAuthor, postMarkdownUrl, postUrl, tagUrl, type Post } from "../lib/posts";
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate, draft, tags } = post.data;
+const product = getProduct(post.data.product);
+const author = await getAuthor(post);
+const url = new URL(postUrl(post), site.url).href;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    description,
+    datePublished: pubDate.toISOString(),
+    dateModified: (updatedDate ?? pubDate).toISOString(),
+    url,
+    mainEntityOfPage: url,
+    image: new URL(site.logo, site.url).href,
+    inLanguage: "en",
+    keywords: tags.join(", "),
+    author: {
+      "@type": "Person",
+      name: author.data.name,
+      description: author.data.description,
+    },
+    publisher: { "@id": `${site.url}/#organization` },
+    ...(product
+      ? { about: { "@type": "Product", name: product.name, url: product.url, category: product.category } }
+      : {}),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${site.url}/blog/` },
+      { "@type": "ListItem", position: 3, name: title, item: url },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  publishedTime={pubDate}
+  modifiedTime={updatedDate}
+  noindex={draft}
+  markdownAlternate={postMarkdownUrl(post)}
+  jsonLd={jsonLd}
+>
+  <div class="reading-progress" slot="before-header" aria-hidden="true"></div>
+
+  <article class="post">
+    <header class="page-hero post-hero wrap">
+      <nav class="section-label reveal post-crumbs" aria-label="Breadcrumb">
+        <a href="/blog/">Index / blog</a>
+        {product && <span> / {product.category}</span>}
+      </nav>
+      <h1 class="post-title reveal">{title}</h1>
+      <p class="page-lead reveal reveal-delay-1">{description}</p>
+      <p class="post-meta reveal reveal-delay-2">
+        {draft && <span class="draft-badge">Draft</span>}
+        <span>By {author.data.name}</span>
+        <span aria-hidden="true">/</span>
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        {
+          updatedDate && (
+            <>
+              <span aria-hidden="true">/</span>
+              <span>
+                Updated <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time>
+              </span>
+            </>
+          )
+        }
+      </p>
+    </header>
+
+    <div class="post-body wrap">
+      <div class="post-main">
+        <div class="prose reveal">
+          <slot />
+        </div>
+
+        <aside class="post-author reveal" aria-label="Author">
+          <span class="contact-mega-label">Written by</span>
+          <p class="post-author-name">{author.data.name}</p>
+          <p class="post-author-copy">{author.data.description}</p>
+        </aside>
+      </div>
+
+      {
+        product && (
+          <aside class="post-product reveal" aria-label="Product">
+            <span class="contact-mega-label">{product.category}</span>
+            <p class="post-product-name">{product.name}</p>
+            <p class="post-product-copy">{product.summary}</p>
+            <a class="btn btn-primary" href={product.url} rel="noopener noreferrer" target="_blank">
+              Visit {product.domain} →
+            </a>
+          </aside>
+        )
+      }
+
+      <footer class="post-footer">
+        {
+          tags.length > 0 && (
+            <ul class="post-tags" aria-label="Tags">
+              {tags.map((tag) => (
+                <li>
+                  <a href={tagUrl(tag)}>{tag}</a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        <a class="btn btn-ghost" href="/blog/">← All posts</a>
+      </footer>
+    </div>
+  </article>
+</BaseLayout>

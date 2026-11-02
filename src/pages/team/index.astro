@@ -1,0 +1,76 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../data/site";
+import { team } from "../../data/team";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: `Team | ${site.name}`,
+    url: `${site.url}/team/`,
+    about: { "@id": `${site.url}/#organization` },
+    mainEntity: team.map((p) => ({
+      "@type": "Person",
+      name: p.name,
+      jobTitle: p.role,
+      description: p.bio,
+      worksFor: { "@id": `${site.url}/#organization` },
+      ...(p.link ? { sameAs: [p.link.href] } : {}),
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title="Team"
+  description="Meet the founders and team behind Prasanta Communications."
+  jsonLd={jsonLd}
+>
+  <header class="page-hero wrap">
+    <p class="section-label reveal">Index / people</p>
+    <h1 class="page-title reveal">
+      <span class="page-title-ghost" aria-hidden="true">Team</span>
+      Team
+    </h1>
+    <p class="page-lead reveal reveal-delay-1">
+      A small group building internet products from Hyderabad.
+    </p>
+  </header>
+
+  <section class="team-list" aria-label="People">
+    {
+      team.map((person, i) => (
+        <article class="person reveal">
+          <span class="person-index" aria-hidden="true">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <div class="person-core">
+            <p class="person-role">{person.role}</p>
+            <h2 class="person-name">{person.name}</h2>
+          </div>
+          <div class="person-detail">
+            <p class="person-bio">{person.bio}</p>
+            {person.link && (
+              <p class="person-links">
+                <a
+                  class="link-underline"
+                  href={person.link.href}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {person.link.label}
+                </a>
+              </p>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </section>
+
+  <div class="team-cta wrap reveal">
+    <p>Want to talk products, partnerships, or work?</p>
+    <a class="btn btn-primary" href="/contact/">Contact us</a>
+  </div>
+</BaseLayout>
