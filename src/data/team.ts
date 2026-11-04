@@ -28,5 +28,10 @@ export const team: Person[] = [
     name: "Nandini",
     role: "Head of Operations",
     bio: "Specialises in operations and internals — keeping day-to-day workflows, coordination, and behind-the-scenes systems running so the team can stay focused on shipping products.",
+    link: {
+      label: "Linked In → @hemanth.veligatla",
+      href: "https://www.instagram.com/hemanth.veligatla/",
+    },
+    // founder: false,
   },
 ];
